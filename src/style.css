@@ -1,0 +1,17 @@
+.preact-richtextarea {
+	width: 132px;
+	height: 22px;
+	padding: 2px;
+	background-color: white;
+	border: 1px solid;
+	resize: auto;
+	cursor: text;
+	/*
+	word-wrap: break-word;
+	white-space: pre-wrap;
+	*/
+}
+
+.preact-richtextarea[is-placeholder] {
+	color: #999;
+}
