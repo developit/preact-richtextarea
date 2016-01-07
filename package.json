@@ -4,11 +4,15 @@
   "version": "0.1.0",
   "description": "A text field that supports HTML editing.",
   "main": "dist/preact-richtextarea.js",
+  "minified:main": "dist/preact-richtextarea.min.js",
   "scripts": {
-    "build": "rollup -c rollup.config.js",
-    "test": "eslint {src,test} && npm run build && mocha --compilers js:babel-register test/_setup.js test/**/*.js",
-    "prepublish": "npm run build",
-    "release": "npm run build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
+    "build": "npm run -s transpile && npm run -s minify && npm run -s size",
+    "transpile": "rollup -c rollup.config.js",
+    "minify": "uglifyjs $npm_package_main -cm -o $npm_package_minified_main -p relative --in-source-map ${npm_package_main}.map --source-map ${npm_package_minified_main}.map",
+    "size": "echo \"gzip size: $(gzip-size $npm_package_minified_main | pretty-bytes)\"",
+    "test": "eslint {src,test} && npm run -s build && mocha --compilers js:babel-register test/_setup.js test/**/*.js",
+    "prepublish": "npm run -s build",
+    "release": "npm run -s build && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
   },
   "babel": {
     "presets": [
@@ -55,17 +59,20 @@
     "babel-register": "^6.3.13",
     "chai": "^3.3.0",
     "eslint": "^1.10.3",
+    "gzip-size-cli": "^1.0.0",
     "mkdirp": "^0.5.1",
     "mocha": "^2.3.3",
     "postcss-discard-comments": "^2.0.2",
     "preact": "^2.6.1",
     "preact-jsx-chai": "^1.0.0",
+    "pretty-bytes-cli": "^1.0.0",
     "rollup": "^0.22.0",
     "rollup-plugin-babel": "^2.2.0",
     "rollup-plugin-commonjs": "^1.4.0",
     "rollup-plugin-npm": "^1.1.0",
     "rollup-plugin-postcss": "0.0.27",
     "sinon": "^1.17.1",
-    "sinon-chai": "^2.8.0"
+    "sinon-chai": "^2.8.0",
+    "uglify-js": "^2.6.1"
   }
 }
