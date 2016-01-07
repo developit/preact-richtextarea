@@ -1,17 +1,25 @@
 .preact-richtextarea {
-	width: 132px;
-	height: 22px;
+	display: block;
+	width: 100%;
+	min-height: 22px;
 	padding: 2px;
 	background-color: white;
 	border: 1px solid;
 	resize: auto;
 	cursor: text;
-	/*
-	word-wrap: break-word;
-	white-space: pre-wrap;
-	*/
+	overflow: auto;
 }
 
-.preact-richtextarea[is-placeholder] {
-	color: #999;
+.preact-richtextarea iframe {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	border: 0 !important;
+	background: none !important;
+	overflow: hidden;
+}
+
+.preact-richtextarea[is-placeholder] iframe {
+	opacity: 0.5;
 }
