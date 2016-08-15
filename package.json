@@ -44,10 +44,7 @@
   },
   "homepage": "https://github.com/developit/preact-richtextarea",
   "peerDependencies": {
-    "preact": "^1.5.0 || ^2.x"
-  },
-  "optionalDependencies": {
-    "preact": "^2.x"
+    "preact": "*"
   },
   "devDependencies": {
     "babel-eslint": "^4.1.6",
@@ -63,8 +60,8 @@
     "mkdirp": "^0.5.1",
     "mocha": "^2.3.3",
     "postcss-discard-comments": "^2.0.2",
-    "preact": "^2.6.1",
-    "preact-jsx-chai": "^1.0.0",
+    "preact": "^5.6.0",
+    "preact-jsx-chai": "^2.1.0",
     "pretty-bytes-cli": "^1.0.0",
     "rollup": "^0.22.0",
     "rollup-plugin-babel": "^2.2.0",
