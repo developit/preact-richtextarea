@@ -1,5 +1,7 @@
 # preact-richtextarea
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/developit/preact-richtextarea.svg)](https://greenkeeper.io/)
+
 [![NPM](http://img.shields.io/npm/v/preact-richtextarea.svg)](https://www.npmjs.com/package/preact-richtextarea)
 [![travis-ci](https://travis-ci.org/developit/preact-richtextarea.svg)](https://travis-ci.org/developit/preact-richtextarea)
 
