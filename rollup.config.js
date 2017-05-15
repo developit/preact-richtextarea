@@ -11,7 +11,7 @@ let external = Object.keys(pkg.peerDependencies || {}).concat(Object.keys(pkg.de
 export default {
 	entry: 'src/index.js',
 	dest: pkg.main,
-	sourceMap: path.resolve(pkg.main),
+	sourceMap: true,
 	moduleName: pkg.amdName,
 	format: 'umd',
 	external,
@@ -20,9 +20,11 @@ export default {
 			babelrc: false,
 			comments: false,
 			exclude: ['node_modules/**', '**/*.css'],
-			presets: ['es2015-rollup'],
+			presets: [
+				['es2015', { modules: false, loose: true }]
+			],
 			plugins: [
-				['transform-es2015-classes', { loose:true }],
+				['transform-es2015-classes', { loose: true }],
 				['transform-object-rest-spread'],
 				['transform-react-jsx', { pragma: 'h' }]
 			]

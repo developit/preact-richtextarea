@@ -39,7 +39,7 @@ export default class RichTextArea extends Component {
 		clearInterval(this.updateHeightTimer);
 	}
 
-	shouldComponentUpdate({ value, stylesheet, placeholder, ...props }) {
+	shouldComponentUpdate({ value, stylesheet, placeholder, children, ...props }) {
 		for (let i in props) if (props[i]!==this.props[i]) return true;
 		this.props = { ...this.props, value, placeholder, stylesheet };
 		this.componentDidUpdate();
@@ -195,14 +195,15 @@ export default class RichTextArea extends Component {
 		if (e) return e.preventDefault(), false;
 	}
 
-	render({ value, class:cl, className, placeholder, stylesheet, ...props }) {
+	render({ value, className, placeholder, stylesheet, ...props }) {
 		for (let i in props) if (props.hasOwnProperty(i) && i.match(/^on/i) && typeof props[i]==='function') delete props[i];
 		return (
-			<richtextarea class={{
-				'preact-richtextarea': true,
-				[cl]: cl,
-				[className]: className
-			}} {...props} onFocus={this.doFocus} tabIndex=" " is-placeholder={ (!value && !!placeholder) || null }>
+			<richtextarea
+				{...props}
+				class={['preact-richtextarea', props.class, className].filter(Boolean).join(' ')}
+				onFocus={this.doFocus}
+				tabIndex=" "
+				is-placeholder={ (!value && !!placeholder) || null }>
 				<iframe />
 			</richtextarea>
 		);
