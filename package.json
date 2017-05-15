@@ -1,7 +1,7 @@
 {
   "name": "preact-richtextarea",
   "amdName": "preactRichTextArea",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A text field that supports HTML editing.",
   "main": "dist/preact-richtextarea.js",
   "minified:main": "dist/preact-richtextarea.min.js",
