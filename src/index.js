@@ -69,8 +69,8 @@ export default class RichTextArea extends Component {
 		if (this.placeholderShowing===true && current===this.props.placeholder) {
 			current = EMPTY_VALUE;
 		}
-		if (current!==value) {
-			editor.innerHTML = value;
+		if (current!==value && editor.__value!==value) {
+			editor.innerHTML = editor.__value = value;
 		}
 		this.updatePlaceholder();
 		this.updateHeight();
