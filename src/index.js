@@ -5,12 +5,29 @@ const UID = Math.random().toString(32).substring(2);
 
 const EMPTY_VALUE = '<br>';
 
+/**
+ * Partition an object between event handlers and non-event handlers.
+ * @param {Object} props            An object with keys that may be event handlers
+ * @param {Boolean} withOrWithout   If true, returns only event handlers. If false, returns only non-event handlers.
+ * @returns {Object}                Returns a copy of {@param props} either with or without all event handlers (based on {@param withOrWithout}).
+ */
+function partitionEventHandlers({ ...props }, withOrWithout) {
+	let key;
+	for (key in props) if (props.hasOwnProperty(key)) {
+		if (/^on/i.test(key) ^ withOrWithout === true) {
+			delete props[key];
+		}
+	}
+	return props;
+}
+
 export default class RichTextArea extends Component {
 	constructor(props) {
 		super(props);
 		this.componentDidUpdate = this.componentDidUpdate.bind(this);
 		this.updateHeight = this.updateHeight.bind(this);
 		this.handleEvent = this.handleEvent.bind(this);
+		this.proxyEvents = this.proxyEvents.bind(this);
 		this.doFocus = this.doFocus.bind(this);
 	}
 
@@ -31,12 +48,38 @@ export default class RichTextArea extends Component {
 		return this.exec('queryCommandValue', command);
 	}
 
+	proxyEvents(props, nextProps) {
+		let currHandlers = partitionEventHandlers(props, true),
+			nextHandlers = partitionEventHandlers(nextProps, true),
+			win = this.getFrame().contentWindow,
+			handler;
+
+		// Add handlers that are in nextHandlers but not in currHandlers
+		for (handler in nextHandlers) if (nextHandlers.hasOwnProperty(handler)) {
+			if (!(handler in currHandlers)) {
+				win.addEventListener(handler.substr(2).toLowerCase(), this.handleEvent);
+			}
+		}
+
+		// Remove handlers that are in currHandlers but not in nextHandlers
+		for (handler in currHandlers) if (currHandlers.hasOwnProperty(handler)) {
+			if (!(handler in nextHandlers)) {
+				win.removeEventListener(handler.substr(2).toLowerCase(), this.handleEvent);
+			}
+		}
+	}
+
 	componentDidMount() {
 		this.updateHeightTimer = setInterval(this.updateHeight, 1000);
+		this.proxyEvents({}, this.props);
 	}
 
 	componentWillUnmount() {
 		clearInterval(this.updateHeightTimer);
+	}
+
+	componentWillReceiveProps(nextProps) {
+		this.proxyEvents(this.props, nextProps);
 	}
 
 	shouldComponentUpdate({ value, stylesheet, placeholder, children, ...props }) {
@@ -107,7 +150,7 @@ export default class RichTextArea extends Component {
 		doc.body.contentEditable = true;
 		doc.body._hasbeensetup = true;
 		let win = this.getFrame().contentWindow;
-		win.onfocus = win.onblur = win.oninput = win.onchange = this.handleEvent;
+		win.onfocus = win.onblur = this.handleEvent;
 		win.onscroll = win.onload = this.updateHeight;
 	}
 
@@ -149,17 +192,22 @@ export default class RichTextArea extends Component {
 		for (let i in this.props) if (i.toLowerCase()==='on'+type) return this.props[i];
 	}
 
-	handleEvent({ type, target }) {
-		let fn = this.getHandler(type),
-			editor = this.getEditor(),
-			value = editor.innerHTML;
-		target = editor || target;
+	handleEvent(e) {
+		let type = e.type,
+			fn = this.getHandler(type),
+			editor = this.getEditor();
+
+		if (type==='input' || type==='change') {
+			e.value = editor.innerHTML;
+		}
+
 		if (type==='focus' || type==='blur') {
 			this.focussed = type==='focus';
 			this.updatePlaceholder();
-			if (type==='focus') target.focus();
+			if (type==='focus') e.target.focus();
 		}
-		if (fn) fn({ value, type, target, currentTarget:this });
+
+		if (fn) fn(e);
 		if (!this.uht) {
 			this.uht = setTimeout(this.updateHeight, 20);
 		}
@@ -196,7 +244,7 @@ export default class RichTextArea extends Component {
 	}
 
 	render({ value, className, placeholder, stylesheet, ...props }) {
-		for (let i in props) if (props.hasOwnProperty(i) && i.match(/^on/i) && typeof props[i]==='function') delete props[i];
+		props = partitionEventHandlers(props, false);
 		return (
 			<richtextarea
 				{...props}
