@@ -1,25 +1,10 @@
 import { h, Component } from 'preact';
+import partitionEventHandlers from './partition-event-handlers';
 import './style.css';
 
 const UID = Math.random().toString(32).substring(2);
 
 const EMPTY_VALUE = '<br>';
-
-/**
- * Partition an object between event handlers and non-event handlers.
- * @param {Object} props            An object with keys that may be event handlers
- * @param {Boolean} withOrWithout   If true, returns only event handlers. If false, returns only non-event handlers.
- * @returns {Object}                Returns a copy of {@param props} either with or without all event handlers (based on {@param withOrWithout}).
- */
-function partitionEventHandlers({ ...props }, withOrWithout) {
-	let key;
-	for (key in props) if (props.hasOwnProperty(key)) {
-		if (/^on/i.test(key) ^ withOrWithout === true) {
-			delete props[key];
-		}
-	}
-	return props;
-}
 
 export default class RichTextArea extends Component {
 	constructor(props) {
