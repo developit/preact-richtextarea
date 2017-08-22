@@ -32,5 +32,28 @@ describe('preact-richtextarea', () => {
 				</richtextarea>
 			);
 		});
+
+		describe('stylesheet', () => {
+			let scratch;
+			before( () => {
+				scratch = document.createElement('div');
+				document.body.appendChild(scratch);
+			});
+			beforeEach( () => {
+				scratch.innerHTML = '';
+			});
+			after( () => {
+				document.body.removeChild(scratch);
+			})
+
+			it('should inject stylesheet', () => {
+				let stylesheet = `strong { color: rgb(255, 0, 0); }`;
+				render(<RichTextArea stylesheet={stylesheet} value="foo <strong>bar</strong> baz" />, scratch);
+				
+				let strong = scratch.querySelector('iframe').contentWindow.document.querySelector('strong');
+				expect(strong).to.exist;
+				expect(window.getComputedStyle(strong).color).to.equal('rgb(255, 0, 0)');
+			});
+		});
 	});
 });

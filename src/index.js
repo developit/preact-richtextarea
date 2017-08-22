@@ -57,6 +57,7 @@ export default class RichTextArea extends Component {
 	componentDidMount() {
 		this.updateHeightTimer = setInterval(this.updateHeight, 1000);
 		this.proxyEvents({}, this.props);
+		this.componentDidUpdate();
 	}
 
 	componentWillUnmount() {
@@ -110,7 +111,7 @@ export default class RichTextArea extends Component {
 			s = doc.getElementById('prtcss'+UID);
 		if (s) s.parentNode.removeChild(s);
 
-		let head = doc.head || doc.getElementsByTagName('head')[0];
+		let head = doc.getElementsByTagName('head')[0];
 		if (!head) head = doc.body.parentNode.insertBefore(doc.createElement('head'), doc.body);
 
 		s = doc.createElement('style');
@@ -124,8 +125,8 @@ export default class RichTextArea extends Component {
 		if (!doc || (doc.body && doc.body._hasbeensetup===true)) return;
 
 		if (!doc.body) {
-			doc.open();
-			doc.write('<!DOCTYPE html><html><body contentEditable></body></html>');
+			doc.open('text/html');
+			doc.write('<!DOCTYPE html><html><head></head><body contentEditable></body></html>');
 			doc.close();
 		}
 		doc.designMode = 'on';
