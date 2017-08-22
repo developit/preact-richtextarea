@@ -1,7 +1,7 @@
-import RichTextArea from '..';
-import { h, Component } from 'preact';
-import { expect } from 'chai';
-// import { spy, match } from 'sinon';
+import RichTextArea from '../src';
+import { h, Component, render } from 'preact';
+import jsxChai from 'preact-jsx-chai';
+chai.use(jsxChai);
 
 let onFocus = (function doFocus(){}).bind({})
 
