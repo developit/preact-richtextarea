@@ -16,7 +16,7 @@ Use `<RichTextArea />` like a normal `<input>`. It supports the same props/attri
 import RichTextArea from 'preact-richtextarea';
 
 const HtmlEditor = ({ html, ...props }) => (
-	<label class="html">
+	<form class="html">
 		Body HTML:
 		<RichTextArea value={html} {...props} />
 	</form>
